@@ -1,0 +1,7 @@
+environment       = "dev"
+project_name      = "erp"
+aws_region        = "us-east-1"
+availability_zone = "us-east-1a"
+app_instance_type = "t3.micro"
+db_instance_type  = "t3.micro"
+ami_id            = "ami-0c7217cdde317cfec"

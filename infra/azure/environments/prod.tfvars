@@ -1,0 +1,5 @@
+environment  = "prod"
+location     = "eastus"
+project_name = "erp"
+app_vm_size  = "Standard_B2s"
+db_vm_size   = "Standard_B2s"
