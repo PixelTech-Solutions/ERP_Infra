@@ -2,7 +2,7 @@
 # Security group — Application tier: HTTP/HTTPS, backend 8080, SSH
 # -----------------------------------------------------------------------------
 resource "aws_security_group" "app" {
-  name        = "sg-${local.name_prefix}-app"
+  name        = "${local.name_prefix}-app-sg"
   description = "ERP application server access"
   vpc_id      = data.aws_vpc.default.id
   tags        = merge(local.common_tags, { Role = "app" })

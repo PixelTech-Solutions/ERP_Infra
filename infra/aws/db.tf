@@ -2,7 +2,7 @@
 # Security group — Database tier: MySQL 3306 only from inside the VPC, SSH
 # -----------------------------------------------------------------------------
 resource "aws_security_group" "db" {
-  name        = "sg-${local.name_prefix}-db"
+  name        = "${local.name_prefix}-db-sg"
   description = "ERP MySQL database server access"
   vpc_id      = data.aws_vpc.default.id
   tags        = merge(local.common_tags, { Role = "db" })
