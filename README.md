@@ -40,14 +40,11 @@ infra/
     environments/{dev,prod}.tfvars
   aws/                    # app EC2 + db EC2
     environments/{dev,prod}.tfvars
-ansible/
-  ansible.cfg
-  inventory/hosts.ini.example
-  playbooks/{app,db}.yml
-  templates/{erp-backend.service.j2, nginx-erp.conf.j2}
-  files/                  # drop the backend JAR here
 .github/workflows/        # azure-dev, azure-prod, aws-dev, aws-prod
 ```
+
+Server **configuration / app deployment** (Ansible) lives in the application
+repo `ERP_System`, not here. This repo only provisions the servers.
 
 ## Deploy (Terraform via GitHub Actions)
 
@@ -61,24 +58,10 @@ The workflows call the shared reusable pipeline
 State is stored in the shared Azure backend; the state key is
 `erp-system/<azure|aws>/<dev|prod>/terraform.tfstate`.
 
-## Configure (Ansible)
+## Configure / deploy the app
 
-After the servers exist, take the Terraform outputs and configure them:
-
-```bash
-cd ansible
-cp inventory/hosts.ini.example inventory/hosts.ini
-# Fill in app/db public IPs and the db private IP, set ansible_user
-#   (azureuser for Azure, ubuntu for AWS).
-
-# Database first
-ansible-playbook playbooks/db.yml \
-  --extra-vars "ansible_password=$ADMIN_PASSWORD \
-                mysql_root_password=$DB_ROOT_PW \
-                mysql_app_password=$DB_APP_PW"
-
-# Then the app (place the JAR in ansible/files/ first)
-ansible-playbook playbooks/app.yml \
-  --extra-vars "ansible_password=$ADMIN_PASSWORD \
-                db_password=$DB_APP_PW"
-```
+Once the servers exist, copy the Terraform **outputs**
+(`app_public_ip`, `db_public_ip`, `db_private_ip`) and run the
+**"Deploy ERP (Ansible)"** workflow in the `ERP_System` repo, which builds
+the backend JAR and configures both servers (MySQL on the db host; Java +
+nginx + the app on the app host).
